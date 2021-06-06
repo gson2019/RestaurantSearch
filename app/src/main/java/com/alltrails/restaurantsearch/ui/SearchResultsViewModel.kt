@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.util.Log
@@ -20,7 +19,6 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 class SearchResultsViewModel @ViewModelInject constructor(
-//    private val resources: Resources,
     private val repository: RestaurantRepository,
     private val sharedPreferences: SharedPreferences,
     @Assisted state: SavedStateHandle) : ViewModel() {
@@ -32,9 +30,7 @@ class SearchResultsViewModel @ViewModelInject constructor(
 
     val currentDestination = MutableLiveData<Int>()
 
-//    var previousQuery: String? = null
-
-    fun doGallerySearch(query: String) {
+    fun initiateRestaurantSearch(query: String) {
         currentQuery.value = query
 
         viewModelScope.launch {
@@ -44,7 +40,7 @@ class SearchResultsViewModel @ViewModelInject constructor(
 
     private fun setLastKnownLocation(location: Location) {
         this.lastKnownLocation = location
-        doGallerySearch(CURRENT_QUERY)
+        initiateRestaurantSearch(CURRENT_QUERY)
     }
 
     fun getLastKnownLocation(): LatLng {
@@ -95,9 +91,4 @@ class SearchResultsViewModel @ViewModelInject constructor(
         const val DEFAULT_QUERY = "dogs"
         const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION_LIST = 1
     }
-}
-
-sealed class ToggleStatus{
-    data class List(val text: String, val icon: Drawable): ToggleStatus()
-    data class Map(val text: String, val icon: Int): ToggleStatus()
 }

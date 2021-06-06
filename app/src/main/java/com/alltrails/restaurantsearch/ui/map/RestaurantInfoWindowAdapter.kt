@@ -3,9 +3,7 @@ package com.alltrails.restaurantsearch.ui.map
 import android.app.Activity
 import android.content.Context
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.alltrails.restaurantsearch.R
-import com.alltrails.restaurantsearch.bitmapDescriptorFromVector
 import com.alltrails.restaurantsearch.data.ResultsItem
 import com.alltrails.restaurantsearch.getPriceLevelString
 import com.bumptech.glide.Glide

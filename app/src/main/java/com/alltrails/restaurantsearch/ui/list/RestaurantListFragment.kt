@@ -34,18 +34,14 @@ View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // get gallery image data
+        // observer initialization
         initObserver()
 
         // recycler view
-        initGalleryList()
+        initRestaurantList()
 
         // click listener
         initClick()
-
-        // toolbar option menu
-        setHasOptionsMenu(true)
-
     }
 
     private fun initClick() {
@@ -57,7 +53,7 @@ View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        viewModel.currentQuery.value?.let { viewModel.doGallerySearch(it) }
+        viewModel.currentQuery.value?.let { viewModel.initiateRestaurantSearch(it) }
     }
 
     private fun initObserver() {
@@ -75,7 +71,7 @@ View.OnClickListener {
         })
     }
 
-    private fun initGalleryList() {
+    private fun initRestaurantList() {
         adapter = RestaurantListAdapter(requireContext() ,this)
 
         recycler_view.setHasFixedSize(true)

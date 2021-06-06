@@ -12,9 +12,6 @@ data class RestaurantSearchResponse(
 	@field:SerializedName("next_page_token")
 	val nextPageToken: String,
 
-//	@field:SerializedName("html_attributions")
-//	val htmlAttributions: List<Any>,
-
 	@field:SerializedName("results")
 	val results: List<ResultsItem>,
 

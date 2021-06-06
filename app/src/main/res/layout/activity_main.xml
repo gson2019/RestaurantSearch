@@ -92,7 +92,7 @@
     <androidx.appcompat.widget.AppCompatToggleButton
         android:id="@+id/toggleBtn"
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
+        android:layout_height="48dp"
         android:textOn="List"
         android:textOff="Map"
         android:checked="false"

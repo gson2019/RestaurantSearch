@@ -3,10 +3,8 @@ package com.alltrails.restaurantsearch.ui
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
@@ -18,7 +16,6 @@ import com.alltrails.restaurantsearch.R
 import com.alltrails.restaurantsearch.data.ResultsItem
 import com.alltrails.restaurantsearch.data.Success
 import com.alltrails.restaurantsearch.ui.SearchResultsViewModel.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION_LIST
-import com.alltrails.restaurantsearch.ui.list.RestaurantListFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -50,24 +47,49 @@ class MainActivity : AppCompatActivity() {
         resultsViewModel.getDeviceLocation(this)
         supportActionBar?.hide()
 
+        setListeners()
+
+        setObservers()
+    }
+
+    private fun setObservers() {
         resultsViewModel.currentDestination.observe(
             this,
-            {
-                destination ->
+            { destination ->
                 val bundle = Bundle()
-                bundle.putParcelableArrayList("EXTRA_DATA", (resultsViewModel.searchResultsLiveData.value as Success).data as ArrayList<ResultsItem>)
-                val buttonDrawable = if(destination == R.id.listFragment) {
-                    R.drawable.ic_location_list
-                } else {
-                    toggleBtn.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_location_list), null, null, null)
+                bundle.putParcelableArrayList(
+                    "EXTRA_DATA",
+                    (resultsViewModel.searchResultsLiveData.value as Success).data as ArrayList<ResultsItem>
+                )
+                val buttonDrawable = if (destination == R.id.listFragment) {
                     R.drawable.ic_location_map
+                } else {
+                    R.drawable.ic_location_list
                 }
-                toggleBtn.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, buttonDrawable), null, null, null)
+                toggleBtn.setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(
+                        this,
+                        buttonDrawable
+                    ), null, null, null
+                )
                 navController.navigate(destination, bundle)
             }
         )
 
+        RxRestaurantSearch.fromSearchView(searchView = searchView)
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .filter { item ->
+                item.isNotEmpty()
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { query ->
+                progress_bar?.let { it.isVisible = true }
+                resultsViewModel.initiateRestaurantSearch(query)
+                searchView.clearFocus()
+            }
+    }
 
+    private fun setListeners() {
         toggleBtn.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 resultsViewModel.currentDestination.value = R.id.mapFragment
@@ -79,18 +101,6 @@ class MainActivity : AppCompatActivity() {
         searchView.setOnSearchClickListener {
             it.requestFocus()
         }
-
-        RxRestaurantSearch.fromSearchView(searchView = searchView)
-            .debounce(500, TimeUnit.MILLISECONDS)
-            .filter { item ->
-                item.isNotEmpty()
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { query ->
-                progress_bar?.let { it.isVisible = true }
-                resultsViewModel.doGallerySearch(query)
-                searchView.clearFocus()
-            }
     }
 
     /**
