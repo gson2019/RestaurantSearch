@@ -16,7 +16,6 @@ import com.alltrails.restaurantsearch.R
 import com.alltrails.restaurantsearch.ui.SearchResultsViewModel.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION_LIST
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
@@ -115,10 +114,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onBackPressed() {
+        finish()
+        super.onBackPressed()
     }
 
     override fun onDestroy() {
