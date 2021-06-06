@@ -17,10 +17,9 @@ import com.google.android.gms.maps.model.*
 
 class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
     private var map: GoogleMap? = null
-
     private var lastClicked: Marker? = null
     private val resultsViewModel by activityViewModels<SearchResultsViewModel>()
-
+    var restaurantList: List<ResultsItem>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,7 +39,8 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
                 is Success -> {
-                    putMaker(it.data as ArrayList<ResultsItem>)
+                    restaurantList = it.data as List<ResultsItem>
+                    updateMap()
                 }
             }
         })
@@ -48,15 +48,12 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         this.map = map
-        val list = requireArguments().getParcelableArrayList<ResultsItem>("EXTRA_DATA")
-        list?.let {
-            putMaker(it)
-        }
+        updateMap()
     }
 
-    private fun putMaker(list: ArrayList<ResultsItem>) {
-        val restaurantWindowAdapter = RestaurantInfoWindowAdapter(requireActivity())
-        if (map != null) {
+    private fun updateMap() {
+        if (map != null && restaurantList.isNullOrEmpty().not()) {
+            val restaurantWindowAdapter = RestaurantInfoWindowAdapter(requireActivity())
             map!!.clear()
             map!!.setInfoWindowAdapter(restaurantWindowAdapter)
             map!!.moveCamera(
@@ -66,7 +63,7 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
                 )
             )
             val boundsBuilder = LatLngBounds.builder()
-            list.forEach { restaurantItem ->
+            restaurantList!!.forEach { restaurantItem ->
                 val markerOptions = MarkerOptions()
                     .position(
                         LatLng(
@@ -103,7 +100,7 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
                 if (null != lastClicked) {
                     lastClicked!!.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_unselected));
                 }
-                lastClicked = null;
+                lastClicked = null
             }
         }
     }
