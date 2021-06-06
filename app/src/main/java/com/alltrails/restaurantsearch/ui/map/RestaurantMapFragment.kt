@@ -76,7 +76,12 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
                 marker?.position?.let { boundsBuilder.include(it) }
                 marker?.tag = restaurantItem
             }
-            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 0)
+
+            val width = resources.displayMetrics.widthPixels
+            val height = resources.displayMetrics.heightPixels
+            val padding = (width * 0.12).toInt() // offset from edges of the map 12% of screen
+
+            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), width, height,padding)
 
             map?.animateCamera(
                 cameraUpdate
