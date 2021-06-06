@@ -14,7 +14,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDJ_3imMshFKQ0qe5c6PShq5M3CZiUg-1M" />
+            android:value="AIzaSyDQSd210wKX_7cz9MELkxhaEOUhFP0AkSk" />
         <activity android:name=".ui.MainActivity"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>

@@ -18,7 +18,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "MAPS_API_KEY", "\"AIzaSyDJ_3imMshFKQ0qe5c6PShq5M3CZiUg-1M\"")
+        buildConfigField("String", "MAPS_API_KEY", "\"AIzaSyDQSd210wKX_7cz9MELkxhaEOUhFP0AkSk\"")
 
     }
 
