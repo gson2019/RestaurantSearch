@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    android:padding="8dp"
+    android:elevation="12dp"
+    android:background="@drawable/ic_restaurant_background">
+
+    <ImageView
+        android:id="@+id/restaurantImg"
+        android:src="@drawable/restaurant"
+        android:scaleType="centerCrop"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/restaurantNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textSize="20sp"
+        android:maxWidth="160dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/restaurantImg"
+        app:layout_constraintTop_toTopOf="@id/restaurantImg"
+        app:layout_constraintHorizontal_bias="0.01"
+        android:maxLines="1"
+        android:textColor="#9BA0A8"
+        tools:text="Restaurant Name" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/ratingBar"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:numStars="5"
+        android:rating="3.8"
+        android:theme="@style/ReviewRatingBar"
+        android:layout_width="@dimen/match_constraint"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/restaurantNameTv"
+        app:layout_constraintStart_toStartOf="@id/restaurantNameTv"/>
+
+    <TextView
+        android:id="@+id/reviewCount"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/ratingBar"
+        app:layout_constraintTop_toTopOf="@id/ratingBar"
+        app:layout_constraintBottom_toBottomOf="@id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        tools:text="(2345)"/>
+
+    <TextView
+        android:id="@+id/statusTv"
+        app:layout_constraintStart_toStartOf="@id/restaurantNameTv"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar"
+        tools:text="$. Open 24 hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">RestaurantSearch</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="restaurant_status">%s \u2022 %s </string>
+    <string name="list">List</string>
+    <string name="map">Map</string>
+</resources>
