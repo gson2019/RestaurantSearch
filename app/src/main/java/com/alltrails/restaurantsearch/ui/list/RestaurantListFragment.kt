@@ -61,11 +61,12 @@ View.OnClickListener {
             when(it){
                 is ApiResult.Success -> {
                     progress_bar.isVisible = false
+                    button_retry.isVisible = false
                     adapter.updateDataSource(it.data as MutableList<ResultsItem>)
                 }
                 is ApiResult.Error -> {
                     progress_bar.isVisible = false
-                    button_retry.isVisible = true
+                    button_retry.isVisible = false
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }

@@ -3,6 +3,7 @@ package com.alltrails.restaurantsearch.ui
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -77,8 +78,10 @@ class MainActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { query ->
                 progress_bar?.let { it.isVisible = true }
-                resultsViewModel.initiateRestaurantSearch(query)
-                searchView.clearFocus()
+                when (resultsViewModel.initiateRestaurantSearch(query)) {
+                    is RequestStatus.RequestIsGoodToGo -> searchView.clearFocus()
+                    else -> Toast.makeText(this, getString(R.string.request_error_reminder), Toast.LENGTH_LONG).show()
+                }
             }
     }
 

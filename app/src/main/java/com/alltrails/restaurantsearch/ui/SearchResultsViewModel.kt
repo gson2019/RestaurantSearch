@@ -13,8 +13,11 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.alltrails.restaurantsearch.LATEST_LOCATION
 import com.alltrails.restaurantsearch.data.ResultsItem
 import com.alltrails.restaurantsearch.data.remote.RestaurantRepository
+import com.alltrails.restaurantsearch.format
+import com.alltrails.restaurantsearch.updateLocation
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
@@ -31,11 +34,22 @@ class SearchResultsViewModel @ViewModelInject constructor(
 
     val currentDestination = MutableLiveData<Int>()
 
-    fun initiateRestaurantSearch(query: String) {
-        currentQuery.value = query
-
-        viewModelScope.launch {
-            repository.getResults(query, getLastKnownLocation())
+    fun initiateRestaurantSearch(query: String): RequestStatus {
+        val latestLocationFromLocal = sharedPreferences.getString(LATEST_LOCATION, null)
+        var queryLocation = latestLocationFromLocal
+        if (lastKnownLocation != null) {
+            sharedPreferences.updateLocation(lastKnownLocation!!.format())
+            queryLocation = lastKnownLocation!!.format()
+        }
+        return if (queryLocation == null) {
+            currentQuery.value = query
+            RequestStatus.LastLocationUnknown
+        } else {
+            currentQuery.value = query
+            viewModelScope.launch {
+                repository.getResults(query, queryLocation)
+            }
+            RequestStatus.RequestIsGoodToGo
         }
     }
 
@@ -44,8 +58,8 @@ class SearchResultsViewModel @ViewModelInject constructor(
         initiateRestaurantSearch(CURRENT_QUERY)
     }
 
-    fun getLastKnownLocation(): LatLng {
-        return LatLng(lastKnownLocation!!.latitude, lastKnownLocation!!.longitude)
+    fun getLastKnownLocation(): LatLng? {
+        return lastKnownLocation?.let { LatLng(it.latitude, it.longitude) }
     }
 
     private fun isLocationGranted(context: Context): Boolean {
@@ -92,4 +106,10 @@ class SearchResultsViewModel @ViewModelInject constructor(
         const val DEFAULT_QUERY = "dogs"
         const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION_LIST = 1
     }
+}
+
+sealed class RequestStatus{
+    object LastLocationUnknown: RequestStatus()
+    object NetworkNotConnected: RequestStatus()
+    object RequestIsGoodToGo: RequestStatus()
 }

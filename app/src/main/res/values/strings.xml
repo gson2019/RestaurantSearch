@@ -5,4 +5,5 @@
     <string name="restaurant_status">%s \u2022 %s </string>
     <string name="list">List</string>
     <string name="map">Map</string>
+    <string name="request_error_reminder">Make sure your device is connected to network and location is enabled</string>
 </resources>

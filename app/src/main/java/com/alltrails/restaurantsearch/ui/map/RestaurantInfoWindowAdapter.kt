@@ -16,7 +16,7 @@ class RestaurantInfoWindowAdapter(private val context: Context) : GoogleMap.Info
 
     override fun getInfoWindow(p0: Marker): View? {
         val mInfoView = (context as Activity).layoutInflater.inflate(R.layout.restaurant_info_window, null)
-        var restaurantInfo: ResultsItem? = p0.tag as ResultsItem?
+        val restaurantInfo: ResultsItem? = p0.tag as ResultsItem?
 
         with(mInfoView) {
             restaurantInfo?.let {

@@ -2,9 +2,12 @@ package com.alltrails.restaurantsearch.data.remote
 
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
+import com.alltrails.restaurantsearch.LATEST_LOCATION
 import com.alltrails.restaurantsearch.data.ApiResult
 import com.alltrails.restaurantsearch.data.ResultsItem
+import com.alltrails.restaurantsearch.format
 import com.alltrails.restaurantsearch.network.GooglePlaceApi
+import com.alltrails.restaurantsearch.updateLocation
 import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,20 +22,19 @@ class RestaurantRepository @Inject constructor(
 
     val searchResultsLiveData: MutableLiveData<ApiResult> by lazy { MutableLiveData() }
 
-    suspend fun getResults(query: String, latLng: LatLng) {
+    suspend fun getResults(query: String, latestLocation: String) {
         val token = getPageToken(query)
-
         try {
             val response = if (token.second == null) {
                 placeApi.searchNearbyRestaurants(
-                    location = "${latLng.latitude},${latLng.longitude}",
+                    location = latestLocation,
                     radius = 10000,
                     type = "restaurant",
                     keyword = query,
                 )
             } else {
                 placeApi.searchNearbyRestaurants(
-                    location = "${latLng.latitude},${latLng.longitude}",
+                    location = latestLocation,
                     radius = 10000,
                     pageToken = token.second!!
                 )
@@ -40,9 +42,9 @@ class RestaurantRepository @Inject constructor(
 
             setPageToken(query, response.nextPageToken)
 
-            searchResultsLiveData.postValue(ApiResult.Success(postProcessData(response.results)))
+            searchResultsLiveData.value = ApiResult.Success(postProcessData(response.results))
         } catch (e: Exception) {
-            searchResultsLiveData.postValue(ApiResult.Error(e.localizedMessage))
+            searchResultsLiveData.value = ApiResult.Error(e.localizedMessage)
         }
     }
 

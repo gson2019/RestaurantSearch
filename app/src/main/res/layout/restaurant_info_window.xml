@@ -12,7 +12,7 @@
 
     <ImageView
         android:id="@+id/restaurantImg"
-        android:src="@drawable/restaurant"
+        tools:src="@drawable/restaurant"
         android:scaleType="centerCrop"
         android:layout_height="48dp"
         android:layout_width="48dp"

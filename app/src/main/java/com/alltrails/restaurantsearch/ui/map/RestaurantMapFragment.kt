@@ -1,5 +1,6 @@
 package com.alltrails.restaurantsearch.ui.map
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -32,7 +33,6 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         resultsViewModel.searchResultsLiveData.observe(viewLifecycleOwner, {
-//            mapProgressBar.isVisible = it is ApiResult.Loading
                 when(it){
                     is ApiResult.Error -> {
                         Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
@@ -45,6 +45,8 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
         })
     }
 
+    @SuppressLint("MissingPermission")
+    @Suppress("checkPermission")
     private fun updateMap() {
         if (mapReady && restaurantList.isNullOrEmpty().not()) {
             val restaurantWindowAdapter = RestaurantInfoWindowAdapter(requireActivity())
@@ -101,6 +103,9 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
                 }
                 lastClicked = null
             }
+            map?.isMyLocationEnabled = true
+            map?.uiSettings?.isMyLocationButtonEnabled = true
+            map?.uiSettings?.isZoomControlsEnabled = true
         }
     }
 
