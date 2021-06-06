@@ -13,12 +13,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.alltrails.restaurantsearch.R
-import com.alltrails.restaurantsearch.data.ResultsItem
-import com.alltrails.restaurantsearch.data.Success
 import com.alltrails.restaurantsearch.ui.SearchResultsViewModel.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION_LIST
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
 import java.util.concurrent.TimeUnit
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private val resultsViewModel: SearchResultsViewModel by viewModels()
 
-    private var searchDisposal: CompositeDisposable? = null
+    private var searchDisposal: Disposable? = null
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +55,6 @@ class MainActivity : AppCompatActivity() {
         resultsViewModel.currentDestination.observe(
             this,
             { destination ->
-                val bundle = Bundle()
-                bundle.putParcelableArrayList(
-                    "EXTRA_DATA",
-                    (resultsViewModel.searchResultsLiveData.value as Success).data as ArrayList<ResultsItem>
-                )
                 val buttonDrawable = if (destination == R.id.listFragment) {
                     R.drawable.ic_location_map
                 } else {
@@ -72,11 +66,11 @@ class MainActivity : AppCompatActivity() {
                         buttonDrawable
                     ), null, null, null
                 )
-                navController.navigate(destination, bundle)
+                navController.navigate(destination)
             }
         )
 
-        RxRestaurantSearch.fromSearchView(searchView = searchView)
+        this.searchDisposal = RxRestaurantSearch.fromSearchView(searchView = searchView)
             .debounce(500, TimeUnit.MILLISECONDS)
             .filter { item ->
                 item.isNotEmpty()
@@ -125,6 +119,14 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onDestroy() {
+        if (this.searchDisposal != null) {
+            this.searchDisposal!!.dispose()
+            this.searchDisposal = null
+        }
+        super.onDestroy()
     }
 
 }

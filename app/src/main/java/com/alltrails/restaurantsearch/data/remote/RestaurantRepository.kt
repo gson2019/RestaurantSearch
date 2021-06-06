@@ -3,9 +3,7 @@ package com.alltrails.restaurantsearch.data.remote
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import com.alltrails.restaurantsearch.data.ApiResult
-import com.alltrails.restaurantsearch.data.Error
 import com.alltrails.restaurantsearch.data.ResultsItem
-import com.alltrails.restaurantsearch.data.Success
 import com.alltrails.restaurantsearch.network.GooglePlaceApi
 import com.google.android.gms.maps.model.LatLng
 import javax.inject.Inject
@@ -42,9 +40,9 @@ class RestaurantRepository @Inject constructor(
 
             setPageToken(query, response.nextPageToken)
 
-            searchResultsLiveData.postValue(Success(postProcessData(response.results)))
+            searchResultsLiveData.postValue(ApiResult.Success(postProcessData(response.results)))
         } catch (e: Exception) {
-            searchResultsLiveData.postValue(Error(e.localizedMessage))
+            searchResultsLiveData.postValue(ApiResult.Error(e.localizedMessage))
         }
     }
 

@@ -5,9 +5,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.alltrails.restaurantsearch.R
-import com.alltrails.restaurantsearch.data.Error
+import com.alltrails.restaurantsearch.data.ApiResult
 import com.alltrails.restaurantsearch.data.ResultsItem
-import com.alltrails.restaurantsearch.data.Success
 import com.alltrails.restaurantsearch.ui.SearchResultsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,13 +19,12 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
     private var lastClicked: Marker? = null
     private val resultsViewModel by activityViewModels<SearchResultsViewModel>()
     var restaurantList: List<ResultsItem>? = null
+    private var mapReady = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mapFragment = requireActivity().supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment?
+        val mapFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-
         getMapAsync(this)
     }
 
@@ -34,25 +32,21 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         resultsViewModel.searchResultsLiveData.observe(viewLifecycleOwner, {
-            when(it){
-                is Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-                is Success -> {
-                    restaurantList = it.data as List<ResultsItem>
-                    updateMap()
-                }
+//            mapProgressBar.isVisible = it is ApiResult.Loading
+                when(it){
+                    is ApiResult.Error -> {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is ApiResult.Success -> {
+                        restaurantList = it.data
+                        updateMap()
+                    }
             }
         })
     }
 
-    override fun onMapReady(map: GoogleMap) {
-        this.map = map
-        updateMap()
-    }
-
     private fun updateMap() {
-        if (map != null && restaurantList.isNullOrEmpty().not()) {
+        if (mapReady && restaurantList.isNullOrEmpty().not()) {
             val restaurantWindowAdapter = RestaurantInfoWindowAdapter(requireActivity())
             map!!.clear()
             map!!.setInfoWindowAdapter(restaurantWindowAdapter)
@@ -108,5 +102,11 @@ class RestaurantMapFragment: SupportMapFragment(), OnMapReadyCallback {
                 lastClicked = null
             }
         }
+    }
+
+    override fun onMapReady(p0: GoogleMap) {
+        map = p0
+        mapReady = true
+        updateMap()
     }
 }

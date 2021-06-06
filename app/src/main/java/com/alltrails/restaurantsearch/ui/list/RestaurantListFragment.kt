@@ -9,9 +9,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.alltrails.restaurantsearch.R
-import com.alltrails.restaurantsearch.data.Error
+import com.alltrails.restaurantsearch.data.ApiResult
 import com.alltrails.restaurantsearch.data.ResultsItem
-import com.alltrails.restaurantsearch.data.Success
 import com.alltrails.restaurantsearch.ui.SearchResultsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_restaurant_list.*
@@ -58,12 +57,14 @@ View.OnClickListener {
 
     private fun initObserver() {
         viewModel.searchResultsLiveData.observe(viewLifecycleOwner, {
+            progress_bar.isVisible = it is ApiResult.Loading
             when(it){
-                is Success -> {
+                is ApiResult.Success -> {
                     progress_bar.isVisible = false
                     adapter.updateDataSource(it.data as MutableList<ResultsItem>)
                 }
-                is Error -> {
+                is ApiResult.Error -> {
+                    progress_bar.isVisible = false
                     button_retry.isVisible = true
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
