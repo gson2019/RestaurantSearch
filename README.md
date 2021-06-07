@@ -9,8 +9,8 @@ a simple exercise for my android skills
 5. navigation graph is used to do simple navigation
 
 ## what's done:
-1. Basic restaurant search functionality based user's current location
-2. on time search with debounce time as 500ms
+1. Basic restaurant search functionality based on user's current location
+2. on time search with debounce time 500ms
 3. List view + Map View
 4. onClick marker to show details of restaurant
 
