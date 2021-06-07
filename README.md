@@ -8,7 +8,7 @@ a simple exercise for my android skills
 4. SharedPreference is used to save and sync liked restaurants
 5. navigation graph is used to do simple navigation
 
-## hat's done:
+## what's done:
 1. Basic restaurant search functionality based user's current location
 2. on time search with debounce time as 500ms
 3. List view + Map View
