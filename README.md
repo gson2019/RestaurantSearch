@@ -18,3 +18,4 @@ a simple exercise for my android skills
 1. Clicking physical back button will exit the whole activity.
 2. The bottom toggle button is the only button to switch between map view and list view.
 3. Search query typing debounce time is 500ms, which means any delay more than 500 ms will trigger a search.
+4. SharedPreference is simply used to record which restaurant was liked. A local DB will be much better to be used as a single source of truth.
